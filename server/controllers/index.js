@@ -155,6 +155,13 @@ const getName = (req, res) => {
   res.json({ name: lastAdded.name });
 };
 
+const getDogName = (req, res) => {
+  // res.json returns json to the page.
+  // Since this sends back the data through HTTP
+  // you can't send any more data to this user until the next response
+  res.json({ name: lastDogAdded.name });
+};
+
 // function to handle a request to set the name
 // controller functions in Express receive the full HTTP request
 // and get a pre-filled out response object to send
@@ -277,11 +284,11 @@ const searchName = (req, res) => {
 };
 
 const searchDogName = (req, res) => {
-  if (!req.body.name) {
+  if (!req.query.name) {
     return res.status(400).json({ error: 'Name is required to perform a search' });
   }
 
-  return Dog.findByName(req.body.name, (err, doc) => {
+  return Dog.findByName(req.query.name, (err, doc) => {
     // errs, handle them
     if (err) {
       return res.status(500).json({ err }); // if error, return it
@@ -294,13 +301,13 @@ const searchDogName = (req, res) => {
     const savePromise = doc.save();
 
     // send back the name as a success for now
-    savePromise.then(() => res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed }));
+    savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
 
     // if save error, just return an error for now
     savePromise.catch(() => res.status(500).json({ err }));
 
     // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed });
+    return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
   });
 };
 
