@@ -284,11 +284,11 @@ const searchName = (req, res) => {
 };
 
 const searchDogName = (req, res) => {
-  if (!req.query.name) {
+  if (!req.body.name) {
     return res.status(400).json({ error: 'Name is required to perform a search' });
   }
 
-  return Dog.findByName(req.query.name, (err, doc) => {
+  return Dog.findByName(req.body.name, (err, doc) => {
     // errs, handle them
     if (err) {
       return res.status(500).json({ err }); // if error, return it
