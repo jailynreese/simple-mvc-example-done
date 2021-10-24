@@ -155,13 +155,6 @@ const getName = (req, res) => {
   res.json({ name: lastAdded.name });
 };
 
-const getDogName = (req, res) => {
-  // res.json returns json to the page.
-  // Since this sends back the data through HTTP
-  // you can't send any more data to this user until the next response
-  res.json({ name: lastDogAdded.name });
-};
-
 // function to handle a request to set the name
 // controller functions in Express receive the full HTTP request
 // and get a pre-filled out response object to send
@@ -210,6 +203,7 @@ const setDogName = (req, res) => {
   if (!req.body.name || !req.body.age || !req.body.breed) {
     // if not respond with a 400 error
     // (either through json or a web page depending on the client dev)
+    console.log('error');
     return res.status(400).json({ error: 'name,age and breed are all required' });
   }
 
@@ -223,7 +217,7 @@ const setDogName = (req, res) => {
     age: req.body.age,
     breed,
   };
-
+  console.log(dogData);
   // create a new object of CatModel with the object to save
   const newDog = new Dog(dogData);
 
@@ -301,13 +295,13 @@ const searchDogName = (req, res) => {
     const savePromise = doc.save();
 
     // send back the name as a success for now
-    savePromise.then(() => res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed }));
+    savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
 
     // if save error, just return an error for now
     savePromise.catch(() => res.status(500).json({ err }));
 
     // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed });
+    return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
   });
 };
 
