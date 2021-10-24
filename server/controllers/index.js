@@ -22,6 +22,8 @@ const dogDefault = {
 // object for us to keep track of the last Cat we made and dynamically update it sometimes
 let lastAdded = new Cat(defaultData);
 
+let lastDogAdded = new Dog(dogDefault);
+
 // function to handle requests to the main page
 // controller functions in Express receive the full HTTP request
 // and a pre-filled out response object to send
@@ -153,6 +155,13 @@ const getName = (req, res) => {
   res.json({ name: lastAdded.name });
 };
 
+const getDogName = (req, res) => {
+  // res.json returns json to the page.
+  // Since this sends back the data through HTTP
+  // you can't send any more data to this user until the next response
+  res.json({ name: lastDogAdded.name });
+};
+
 // function to handle a request to set the name
 // controller functions in Express receive the full HTTP request
 // and get a pre-filled out response object to send
@@ -201,12 +210,12 @@ const setDogName = (req, res) => {
   if (!req.body.name || !req.body.age || !req.body.breed) {
     // if not respond with a 400 error
     // (either through json or a web page depending on the client dev)
-    return res.status(400).json({ error: 'name, age and breed are all required' });
+    return res.status(400).json({ error: 'name,age and breed are all required' });
   }
 
   // if required fields are good, then set name
   const name = `${req.body.name}`;
-  let breed = `${req.body.breed}`;
+  const breed = `${req.body.breed}`;
 
   // dummy JSON to insert into database
   const dogData = {
@@ -215,13 +224,18 @@ const setDogName = (req, res) => {
     breed,
   };
 
+  // create a new object of CatModel with the object to save
   const newDog = new Dog(dogData);
 
   // create new save promise for the database
   const savePromise = newDog.save();
 
-  savePromise.then(() => {  
-    res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed });
+  savePromise.then(() => {
+    // set the lastAdded cat to our newest cat object.
+    // This way we can update it dynamically
+    lastDogAdded = newDog;
+    // return success
+    res.json({ name: lastDogAdded.name, age: lastDogAdded.age, breed: lastDogAdded.breed });
   });
 
   // if error, return it
@@ -270,7 +284,7 @@ const searchName = (req, res) => {
 };
 
 const searchDogName = (req, res) => {
-  if (!req.query.name) {
+  if (!req.body.name) {
     return res.status(400).json({ error: 'Name is required to perform a search' });
   }
 
@@ -287,13 +301,13 @@ const searchDogName = (req, res) => {
     const savePromise = doc.save();
 
     // send back the name as a success for now
-    savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
+    savePromise.then(() => res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed }));
 
     // if save error, just return an error for now
     savePromise.catch(() => res.status(500).json({ err }));
 
     // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
+    return res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed });
   });
 };
 
