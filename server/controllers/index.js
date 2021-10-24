@@ -301,13 +301,13 @@ const searchDogName = (req, res) => {
     const savePromise = doc.save();
 
     // send back the name as a success for now
-    savePromise.then(() => res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed }));
+    savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
 
     // if save error, just return an error for now
     savePromise.catch(() => res.status(500).json({ err }));
 
     // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age + 1, breed: doc.breed });
+    return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
   });
 };
 
