@@ -214,14 +214,14 @@ const setDogName = (req, res) => {
   }
 
   // if required fields are good, then set name
-  const name = `${req.body.name}`;
-  const breed = `${req.body.breed}`;
+  // const name = `${req.body.name}`;
+  // const breed = `${req.body.breed}`;
 
   // dummy JSON to insert into database
   const dogData = {
-    name,
+    name: req.body.name,
     age: req.body.age,
-    breed,
+    breed: req.body.breed,
   };
 
   // create a new object of CatModel with the object to save
@@ -233,9 +233,9 @@ const setDogName = (req, res) => {
   savePromise.then(() => {
     // set the lastAdded cat to our newest cat object.
     // This way we can update it dynamically
-    lastDogAdded = newDog;
+    //lastDogAdded = newDog;
     // return success
-    res.json({ name: lastDogAdded.name, age: lastDogAdded.age, breed: lastDogAdded.breed });
+    res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed });
   });
 
   // if error, return it
