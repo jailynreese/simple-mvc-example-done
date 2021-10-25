@@ -206,22 +206,59 @@ const setName = (req, res) => {
   return res;
 };
 
+// const setDogName = (req, res) => {
+//   if (!req.body.name || !req.body.age || !req.body.breed) {
+//     // if not respond with a 400 error
+//     // (either through json or a web page depending on the client dev)
+//     return res.status(400).json({ error: 'name,age and breed are all required' });
+//   }
+
+//   // if required fields are good, then set name
+//   const name = `${req.body.name}`;
+//   const breed = `${req.body.breed}`;
+
+//   // dummy JSON to insert into database
+//   const dogData = {
+//     name,
+//     age: req.body.age,
+//     breed,
+//   };
+
+//   // create a new object of CatModel with the object to save
+//   const newDog = new Dog(dogData);
+
+//   // create new save promise for the database
+//   const savePromise = newDog.save();
+
+//   savePromise.then(() => {
+//     // set the lastAdded cat to our newest cat object.
+//     // This way we can update it dynamically
+//     lastDogAdded = newDog;
+//     // return success
+//     res.json({ name: lastDogAdded.name, age: lastDogAdded.age, breed: lastDogAdded.breed });
+//   });
+
+//   // if error, return it
+//   savePromise.catch((err) => res.status(500).json({ err }));
+
+//   return res;
+// };
+
 const setDogName = (req, res) => {
+  // check if the required fields exist
+  // normally you would also perform validation
+  // to know if the data they sent you was real
   if (!req.body.name || !req.body.age || !req.body.breed) {
     // if not respond with a 400 error
     // (either through json or a web page depending on the client dev)
-    return res.status(400).json({ error: 'name,age and breed are all required' });
+    return res.status(400).json({ error: 'name, age and breed are all required' });
   }
-
-  // if required fields are good, then set name
-  const name = `${req.body.name}`;
-  const breed = `${req.body.breed}`;
 
   // dummy JSON to insert into database
   const dogData = {
-    name,
+    name: req.body.name,
     age: req.body.age,
-    breed,
+    breed: req.body.breed,
   };
 
   // create a new object of CatModel with the object to save
@@ -310,7 +347,7 @@ const searchDogName = (req, res) => {
   //   return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
   // });
 
-  return Dog.findByName(req.body.name)
+  Dog.findByName(req.body.name)
   .then((doc) => {
     if (err) {
       return res.status(500).json({ error: 'No dogs found.' }); // if error, return it
