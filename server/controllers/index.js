@@ -214,14 +214,14 @@ const setDogName = (req, res) => {
   }
 
   // if required fields are good, then set name
-  // const name = `${req.body.name}`;
-  // const breed = `${req.body.breed}`;
+  const name = `${req.body.name}`;
+  const breed = `${req.body.breed}`;
 
   // dummy JSON to insert into database
   const dogData = {
-    name: req.body.name,
+    name,
     age: req.body.age,
-    breed: req.body.breed,
+    breed,
   };
 
   // create a new object of CatModel with the object to save
@@ -288,27 +288,38 @@ const searchDogName = (req, res) => {
     return res.status(400).json({ error: 'Name is required to perform a search' });
   }
 
-  return Dog.findByName(req.query.name, (err, doc) => {
-    // errs, handle them
+  // return Dog.findByName(req.query.name, (err, doc) => {
+  //   // errs, handle them
+  //   if (err) {
+  //     return res.status(500).json({ err }); // if error, return it
+  //   }
+
+  //   if (!doc) {
+  //     return res.json({ error: 'No dogs found' });
+  //   }
+
+  //   // const savePromise = doc.save();
+
+  //   // // send back the name as a success for now
+  //   // savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
+
+  //   // // if save error, just return an error for now
+  //   // savePromise.catch(() => res.status(500).json({ err }));
+
+  //   // if a match, send the match back
+  //   return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
+  // });
+
+  return Dog.findByName(req.query.name)
+  .then((doc) => {
     if (err) {
-      return res.status(500).json({ err }); // if error, return it
+      return res.status(500).json({ error: 'No dogs found.' }); // if error, return it
     }
-
-    if (!doc) {
-      return res.json({ error: 'No dogs found' });
-    }
-
-    // const savePromise = doc.save();
-
-    // // send back the name as a success for now
-    // savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
-
-    // // if save error, just return an error for now
-    // savePromise.catch(() => res.status(500).json({ err }));
-
-    // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
-  });
+    let modify = doc;
+    modify.age++;
+    return res.json({ name: modify.name, age: modify.age, breed: modify.breed });
+  })
+  .catch((err) => res.status(500).json({err}));
 };
 
 // function to handle a request to update the last added object
