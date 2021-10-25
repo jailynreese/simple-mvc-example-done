@@ -22,7 +22,7 @@ const dogDefault = {
 // object for us to keep track of the last Cat we made and dynamically update it sometimes
 let lastAdded = new Cat(defaultData);
 
-let lastDogAdded = new Dog(dogDefault);
+const lastDogAdded = new Dog(dogDefault);
 
 // function to handle requests to the main page
 // controller functions in Express receive the full HTTP request
@@ -233,9 +233,9 @@ const setDogName = (req, res) => {
   savePromise.then(() => {
     // set the lastAdded cat to our newest cat object.
     // This way we can update it dynamically
-    //lastDogAdded = newDog;
+    lastDogAdded = newDog;
     // return success
-    res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed });
+    res.json({ name: lastDogAdded.name, age: lastDogAdded.age, breed: lastDogAdded.breed });
   });
 
   // if error, return it
@@ -298,13 +298,13 @@ const searchDogName = (req, res) => {
       return res.json({ error: 'No dogs found' });
     }
 
-    const savePromise = doc.save();
+    // const savePromise = doc.save();
 
-    // send back the name as a success for now
-    savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
+    // // send back the name as a success for now
+    // savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
 
-    // if save error, just return an error for now
-    savePromise.catch(() => res.status(500).json({ err }));
+    // // if save error, just return an error for now
+    // savePromise.catch(() => res.status(500).json({ err }));
 
     // if a match, send the match back
     return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
