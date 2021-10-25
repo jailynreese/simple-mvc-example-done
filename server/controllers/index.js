@@ -293,9 +293,9 @@ const setDogName = (req, res) => {
   savePromise.then(() => {
     // set the lastAdded cat to our newest cat object.
     // This way we can update it dynamically
-    lastDogAdded = newDog;
+    //lastDogAdded = newDog;
     // return success
-    res.json({ name: lastDogAdded.name, age: lastDogAdded.age, breed: lastDogAdded.breed });
+    res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed });
   });
 
   // if error, return it
