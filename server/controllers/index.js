@@ -370,13 +370,22 @@ const searchDogName = (req, res) => {
   //   return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
   // });
 
-  Dog.findByName(req.body.name)
+  return Dog.findByName(req.body.name)
   .then((doc) => {
     if (err) {
       return res.status(500).json({ error: 'No dogs found.' }); // if error, return it
     }
     let modify = doc;
     modify.age++;
+
+    const savePromise = doc.save();
+
+    // send back the name as a success for now
+    savePromise.then(() => res.json({ name: modify.name, age: modify.age, breed: modify.breed }));
+
+    // if save error, just return an error for now
+    savePromise.catch(() => res.status(500).json({ err }));
+    
     return res.json({ name: modify.name, age: modify.age, breed: modify.breed });
   })
   .catch((err) => res.status(500).json({err}));
