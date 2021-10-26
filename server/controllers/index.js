@@ -155,7 +155,6 @@ const hostPage3 = (req, res) => {
 };
 
 const hostPage4 = (req, res) => {
-
   const callback = (err, docs) => {
     if (err) {
       return res.status(500).json({ err }); // if error, return it
@@ -293,7 +292,7 @@ const setDogName = (req, res) => {
   savePromise.then(() => {
     // set the lastAdded cat to our newest cat object.
     // This way we can update it dynamically
-    //lastDogAdded = newDog;
+    // lastDogAdded = newDog;
     // return success
     res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed });
   });
@@ -358,18 +357,21 @@ const searchDogName = (req, res) => {
       return res.json({ error: 'No dogs found' });
     }
 
-    const savePromise = doc.save();
+    const newDog = doc;
+    newDog.age++;
+
+
+    const savePromise = newDog.save();
 
     // send back the name as a success for now
-    savePromise.then(() => res.json({ name: doc.name, age: doc.age, breed: doc.breed }));
+    savePromise.then(() => res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed }));
 
     // if save error, just return an error for now
     savePromise.catch(() => res.status(500).json({ err }));
 
     // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age, breed: doc.breed });
+    return res.json({ name: newDog.name, age: newDog.age, breed: newDog.breed });
   });
-
 };
 
 // function to handle a request to update the last added object
